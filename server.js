@@ -22,7 +22,8 @@ app.get('/', (req, res) => {
     res.json({"message": "Welcome to whitepanda cars API module"});
 });
 
-require('./routes/CarsRoute.js')(app)
+require('./routes/CarsRoute.js')(app);
+require('./routes/BookingRoutes.js')(app);
 
 app.listen(3000, () => {
     console.log("Server is listening on port 3000");

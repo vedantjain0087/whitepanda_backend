@@ -12,7 +12,7 @@ exports.create = (req, res) => {
     // Create a Car
     const car = new Car({
         CarName: req.body.CarName,
-        CarModel:req.body.CarModel,  
+        CarModel:req.body.CarModel
     });
 
     // Save Car in the database
@@ -69,7 +69,7 @@ exports.update = (req, res) => {
     // Find note and update it with the request body
     Car.findByIdAndUpdate(req.params.CarId, {
         CarName: req.body.CarName,
-        CarModel:req.body.CarModel,  
+        CarModel:req.body.CarModel
     }, {new: true})
     .then(Car => {
         if(!Car) {

@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const carsSchema = mongoose.Schema({
   CarName: String,
-  CarModel:String,  
+  CarModel:String
 },{
     timestamps: true
 });
