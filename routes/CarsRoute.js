@@ -1,18 +1,18 @@
 module.exports = (app) => {
     const Cars = require('../controllers/Cars.controller.js');
 
-    // Create a new User
+    // Create a new Car
     app.post('/Car', Cars.create);
 
-    // Retrieve all Users
+    // Retrieve all Cars
     app.get('/Cars', Cars.findAll);
 
-    // Retrieve a single User with UserId
+    // Retrieve a single Car with CarId
     app.get('/Cars/:CarId', Cars.findOne);
 
-    // Update a User with UserId
+    // Update a Car with CarId
     app.put('/Cars/:CarId', Cars.update);
 
-    // Delete a User with UserId
+    // Delete a Car with CarId
     app.delete('/Cars/:CarId', Cars.delete);
 }
