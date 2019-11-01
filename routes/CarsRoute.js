@@ -7,7 +7,7 @@ module.exports = (app) => {
     // Retrieve all Cars
     app.get('/Cars', Cars.findAll);
 
-    // Retrieve a single Car with CarId
+    // // Retrieve a single Car with CarId
     app.get('/Cars/:CarId', Cars.findOne);
 
     // Update a Car with CarId
