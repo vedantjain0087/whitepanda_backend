@@ -10,7 +10,10 @@ module.exports = (app) => {
     // Retrieve all Bookings
     app.get('/Bookings', Bookings.findAll);
 
-    // // Retrieve a single Booking with BookingId
+    // Retrieve Booking details of a particular car
+    app.get('/CarBookingDetails/:carId', Bookings.carBookingDetails);
+
+    // Retrieve a single Booking with BookingId
     app.get('/Bookings/:BookingId', Bookings.findOne);
 
     // Delete a Booking with BookingId

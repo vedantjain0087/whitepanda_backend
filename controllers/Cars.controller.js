@@ -66,51 +66,88 @@ exports.findOne = (req, res) => {
 // Update a Car identified by the CarId in the request
 exports.update = (req, res) => {
 
-    // Find note and update it with the request body
-    Car.findByIdAndUpdate(req.params.CarId, {
-        CarName: req.body.CarName,
-        CarModel:req.body.CarModel
-    }, {new: true})
-    .then(Car => {
-        if(!Car) {
-            return res.status(404).send({
-                message: "Car not found with id " + req.params.CarId
-            });
-        }
-        res.send(Car);
-    }).catch(err => {
-        if(err.kind === 'ObjectId') {
-            return res.status(404).send({
-                message: "Car not found with id " + req.params.CarId
-            });                
-        }
-        return res.status(500).send({
-            message: "Error updating Car with id " + req.params.CarId
-        });
-    });
+    Car.aggregate([{
+        $lookup:
+          {
+            from: "bookings",
+            localField: "_id",
+            foreignField: "CarId",
+            as: "booking_details"
+          }
+        },
+        { $match : { _id : ObjectId(req.params.CarId) } }]).then(data => {
+            if(data[0].booking_details.length == 0){
+                // Find note and update it with the request body
+                Car.findByIdAndUpdate(req.params.CarId, {
+                    CarName: req.body.CarName,
+                    CarModel:req.body.CarModel
+                }, {new: true})
+                .then(Car => {
+                    if(!Car) {
+                        return res.status(404).send({
+                            message: "Car not found with id " + req.params.CarId
+                        });
+                    }
+                    res.send(Car);
+                }).catch(err => {
+                    if(err.kind === 'ObjectId') {
+                        return res.status(404).send({
+                            message: "Car not found with id " + req.params.CarId
+                        });                
+                    }
+                    return res.status(500).send({
+                        message: "Error updating Car with id " + req.params.CarId
+                    });
+                });
+            }else{
+                return res.status(404).send({
+                    message: "Cannot Update as this car is under booking with Carid " + req.params.CarId
+                });
+            }
+        })
+  
 
 };
 
 
 // Delete a Car with the specified CarId in the request
 exports.delete = (req, res) => {
-    Car.findByIdAndRemove(req.params.CarId)
-    .then(Car => {
-        if(!Car) {
-            return res.status(404).send({
-                message: "Car not found with id " + req.params.CarId
-            });
-        }
-        res.send({message: "Car deleted successfully!"});
-    }).catch(err => {
-        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
-            return res.status(404).send({
-                message: "Car not found with id " + req.params.CarId
-            });                
-        }
-        return res.status(500).send({
-            message: "Could not delete Car with id " + req.params.CarId
-        });
-    });
+    Car.aggregate([{
+        $lookup:
+          {
+            from: "bookings",
+            localField: "_id",
+            foreignField: "CarId",
+            as: "booking_details"
+          }
+        },
+        { $match : { _id : ObjectId(req.body.CarId) } }]).then(data => {
+            if(data[0].booking_details.length == 0){
+                Car.findByIdAndRemove(req.body.CarId)
+                .then(Car => {
+                    if(!Car) {
+                        return res.status(404).send({
+                            message: "Car not found with id " + req.body.CarId
+                        });
+                    }
+                    res.send({message: "Car deleted successfully!"});
+                }).catch(err => {
+                    if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+                        return res.status(404).send({
+                            message: "Car not found with id " + req.body.CarId
+                        });                
+                    }
+                    return res.status(500).send({
+                        message: "Could not delete Car with id " + req.body.CarId
+                    });
+                });
+            }
+            else{
+                return res.status(404).send({
+                    message: "Cannot Delete this car as it is under booking, CarId " + req.body.CarId
+                });   
+            }
+        })
 
+  
 };

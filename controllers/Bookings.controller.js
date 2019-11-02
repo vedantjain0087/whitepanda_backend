@@ -1,5 +1,6 @@
 const Booking = require('../models/bookings');
 const Car = require('../models/cars');
+ObjectId = require('mongodb').ObjectID;
 
 function getFormattedDate(inputDate) {
     var date = new Date(inputDate);
@@ -128,6 +129,20 @@ exports.findOne = (req, res) => {
     });
 
 };
+
+exports.carBookingDetails = (req, res) => {
+    Car.aggregate([{
+        $lookup:
+          {
+            from: "bookings",
+            localField: "_id",
+            foreignField: "CarId",
+            as: "booking_details"
+          }
+        }, { $match : { _id : ObjectId(req.params.carId) } }]).then(data => {
+            res.send(data);
+        })
+}
 
 // Update a Car identified by the CarId in the request
 exports.update = (req, res) => {

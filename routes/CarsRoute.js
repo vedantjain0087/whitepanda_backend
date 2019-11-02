@@ -14,5 +14,5 @@ module.exports = (app) => {
     app.put('/Cars/:CarId', Cars.update);
 
     // Delete a Car with CarId
-    app.delete('/Cars/:CarId', Cars.delete);
+    app.delete('/Car', Cars.delete);
 }
